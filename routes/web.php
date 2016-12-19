@@ -79,6 +79,7 @@ Route::get('view-con',function (){
 Route::get('new-con',function (){
     return View::make('customer/Connections/new-con');
 });
+Route::post('/customer/newconsubmit',['as'=>'new_con_submit','uses'=>'customerController@submitCon']);
 
 Route::get('change-con',function (){
     return View::make('customer/Connections/change-con');
