@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Auth;
+use Illuminate\Support\Facades\DB;
 
 //use App\DBModels\Person;
 use App\Http\Controllers\Controller;
@@ -17,12 +18,23 @@ class LoginController extends Controller
         ]);
         $logged_in = Auth::attempt(['username' => $request['username'], 'password' => $request['password']]);
         if ($logged_in) {
-            return view('welcome')->with('message', 'Login successful');
+            $result=DB::select("SELECT * FROM `user` where username=?",[Auth::user()->username]);
+            $type=$result[0]->type;
+            if ($type==1){
+                return view('employee/pages/connections')->with('message', 'Login successful');
+            }
+            elseif ($type==2){
+                return view('customer/welcome')->with('message', 'Login successful');
+            }
+//            return view('welcome')->with('message', 'Login successful');
         } else {
-            return view('welcome')->with('message', 'Login failed. Check email and password');
+            return view('auth/login')->with('message', 'Login failed. Check email and password');
         }
     }
-
+    public function username()
+    {
+        return 'username';
+    }
     public function logout()
     {
         Auth::logout();
@@ -45,4 +57,15 @@ class LoginController extends Controller
 //            Person::updatePassword($id, $old_password, $new_password);
 //        }
 //    }
+
+    public function signup(Request $request){
+        DB::statement("INSERT INTO `user` (`user_id`, `username`, `password`, `type`, `access_level`, `image_link`, `remember_token`) VALUES (3,?,?,?,?, NULL,NULL)",[
+            $request['username'],
+            bcrypt($request['password']),
+            $request['type'],
+            $request['access_level']
+        ]);
+
+        return view('auth/login')->with('message', 'Successfully signed up.');
+    }
 }

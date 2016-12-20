@@ -23,6 +23,12 @@ Route::get('/login', ['as'=>'login',function () {
 Route::post('/loginauth', ['as'=>'loginauth','uses'=>'Auth\LoginController@login']);
 Route::get('/logout', ['as'=>'logout','uses'=>'Auth\LoginController@logout']);
 
+Route::get('/signup', ['as'=>'signup',function () {
+    return view('auth.signup');
+}]);
+
+Route::post('/signauth', ['as'=>'signauth','uses'=>'Auth\LoginController@signup']);
+
 //malsha roots ------------------------------------------------------------------------------------------------
 Route::get('/employee',function (){
     return View::make('employee/employeeLayout');
